@@ -3,6 +3,14 @@ import VueRouter from 'vue-router';
 
 import Login from "@/components/global/Login";
 import Home from '@/components/home/Home';
+import UserList from "@/components/usersystem/UserList";
+import MainPage from "@/components/MainPage";
+import RoleList from "@/components/permission/RoleList";
+import PermissionList from "@/components/permission/PermissionList";
+import GoodsList from "@/components/goods/GoodsList";
+import HistoryOrderList from "@/components/order/HistoryOrderList";
+import NewOrderList from "@/components/order/NewOrderList";
+
 Vue.use(VueRouter)
 
 const routes = [
@@ -14,10 +22,51 @@ const routes = [
         path: '/login',
         component: Login
     },
+
+
     {
         path: '/home',
-        component: Home
-    }
+        component: Home,
+        children: [
+            {
+                path: 'mainPage',
+                component: MainPage
+            },
+            {
+                path: 'userList',
+                component: UserList
+            },
+            {
+                path: 'roleList',
+                component: RoleList
+            },
+            {
+                path: 'permissionList',
+                component: PermissionList
+            },
+            {
+                path: 'goodsList',
+                component: GoodsList
+            },
+            {
+                path: 'userList',
+                component: UserList
+            },
+            {
+                path: 'mainPage',
+                component: MainPage
+            },
+            {
+                path: 'newOrderList',
+                component: NewOrderList
+            },
+            {
+                path: 'historyOrderList',
+                component: HistoryOrderList
+            }
+        ]
+    },
+
 
 ]
 const router = new VueRouter({mode: 'history', routes})

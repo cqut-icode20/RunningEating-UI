@@ -15,7 +15,7 @@
               background-color="#373d3f"
               text-color="#fff"
               active-text-color="#ffd04b">
-            <el-submenu index="1">
+            <el-submenu :index="1+'t'">
               <template slot="title">
                 <i class="el-icon-user"></i>
                 <span>{{ "Hello," + user.username }}</span>
@@ -33,7 +33,7 @@
                 </template>
               </el-menu-item>
             </el-submenu>
-            <el-menu-item index="2">
+            <el-menu-item index="2'">
               <template slot="title">
                 <i class="el-icon-chat-dot-square"></i>
                 <span>消息</span>
@@ -45,57 +45,46 @@
       <!--    中部区域-->
       <el-container class="home-container-mid">
         <!--  侧边栏-->
-        <el-aside :width="isCollapse ? '61px' : '180px'">
+        <el-aside>
+
           <el-menu
-              default-active="2"
+              :collapse-transition="true"
+              :collapse="isCollapse"
+              default-active="1_id"
               class="el-menu-vertical-aside"
               @open="handleOpen"
               @close="handleClose"
-              background-color="#545c64"
+              background-color="#373d3f"
               text-color="#fff"
               active-text-color="#ffd04b">
-            <!--            首页-->
             <el-menu-item index="1">
               <template slot="title">
-                <i class="el-icon-s-data"></i>
-                <span>首页统计</span>
+                <i style="color: #5dbe8a" class="el-icon-s-fold" @click="collapse()"></i>
+                <span style="color: #5dbe8a" @click="collapse()">{{ isCollapse ? "展开" : "折叠" }}</span>
               </template>
             </el-menu-item>
-            <!--            用户管理-->
-            <el-submenu index="2">
+            <!--            一级标题-->
+            <el-menu-item index="2" @click="handleOpen(mainPage.path)">
               <template slot="title">
-                <i class="el-icon-user"></i>
-                <span slot="title">用户管理</span>
+                <i :class="iconsObj[0]"></i>
+                <span>{{ mainPage.title }}</span>
               </template>
-              <el-menu-item index="2-1">用户列表</el-menu-item>
-            </el-submenu>
-            <!--            权限管理-->
-            <el-submenu index="3">
-              <template slot="title">
-                <i class="el-icon-s-operation"></i>
-                <span>权限管理</span>
-              </template>
-              <el-menu-item index="3-1">角色列表</el-menu-item>
-              <el-menu-item index="3-2">权限列表</el-menu-item>
-            </el-submenu>
-            <!--            商品管理-->
-            <el-menu-item index="4">
-              <i class="el-icon-shopping-bag-1"></i>
-              <span slot="title">商品管理</span>
             </el-menu-item>
-            <el-submenu index="4">
+            <el-submenu :index="item.id+'_id'" v-for="item in menuList" :key="item.id" @click="handleOpen(item.path)">
               <template slot="title">
-                <i class="el-icon-truck"></i>
-                <span>订单管理</span>
+                <i :class="iconsObj[item.id]"></i>
+                <span>{{ item.title }}</span>
               </template>
-              <el-menu-item index="4-1">待处理订单</el-menu-item>
-              <el-menu-item index="4-2">历史订单</el-menu-item>
+              <el-menu-item :index="i.id+'_id'" v-for="i in item.children" :key="i.id" @click="handleOpen(i.path)">
+                {{ i.title }}
+              </el-menu-item>
             </el-submenu>
-
           </el-menu>
         </el-aside>
         <el-main>
-          <router-view></router-view>
+          <router-view>
+
+          </router-view>
         </el-main>
       </el-container>
     </el-container>
@@ -103,6 +92,8 @@
 </template>
 
 <script>
+import logger from "si-log";
+
 export default {
   name: 'Home',
   data() {
@@ -110,22 +101,58 @@ export default {
       isCollapse: false,//时候启用侧边栏折叠
       user: {
         username: "智商低"
-      }
+      },
+      mainPage: {title: '首页统计', id: 0, path: '/home/mainPage'},
+      menuList: [
+        //一级标题                  二级标题
+        {title: '用户管理', id: 1, path: '/none', children: [{title: '用户列表', id: 6, path: '/home/userList'}]},
+        {
+          title: '权限管理',
+          id: 2,
+          path: '/none',
+          children: [{title: '角色列表', id: 7, path: '/home/roleList'}, {
+            title: '权限列表',
+            id: 10,
+            path: '/home/permissionList'
+          }]
+        },
+        {title: '商品管理', id: 3, path: '/none', children: [{title: '商品列表', id: 8, path: '/home/goodsList'}]},
+        {
+          title: '订单管理',
+          id: 4,
+          path: '/none',
+          children: [{title: '最新订单', id: 9, path: '/home/newOrderList'}, {
+            title: '历史订单',
+            id: 11,
+            path: '/home/historyOrderList'
+          }]
+        },
+      ],
+      iconsObj: ['el-icon-s-data', 'el-icon-user', 'el-icon-s-operation', 'el-icon-shopping-bag-1', 'el-icon-truck']
     }
   },
   methods: {
     //退出登录
-    logout() {
-    },
+
     //打开菜单时
-    handleOpen() {
+    handleOpen(path) {
+      this.isCollapse = false;
+      logger.info('handleOpen:path=' + path)
+      // 跳转到指定页面
+      if (path.match('/') && this.$route.path != path)
+        this.$router.push(path)
     },
     // 关闭菜单时
     handleClose() {
     },
-    handleSelect() {
-    },
+    handleSelect(key) {
+      logger.info('handleOpen:path=' + key)
 
+    },
+    collapse() {
+      logger.info('collapse Called')
+      this.isCollapse = !this.isCollapse;
+    }
   }
 }
 </script>
@@ -136,18 +163,25 @@ export default {
   height: 100vh;
 }
 
+.el-menu {
+  text-align: left;
+  user-select: none;
+  border: none !important;
+  overflow: hidden;
+}
+
 .el-submenu .el-menu-item {
-  text-align: right;
-  margin-right: 10px;
+  padding: 0 !important;
+  text-align: center;
+
 }
 
 .el-menu-item, .el-submenu {
-  margin-right: 20px;
 }
 
 .home-container-mid {
   height: 100%;
-  background-color: #2c3e50;
+  /*background-color: #2c3e50;*/
 }
 
 .el-header {
@@ -184,5 +218,8 @@ export default {
   border: none !important;
 }
 
+.el-main {
+  padding: 0;
+}
 </style>
 

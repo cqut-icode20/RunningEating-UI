@@ -69,7 +69,7 @@ export default {
         //token 只应在当前网站打开期间生效, 所以将 token 保存在 sessionStorage中
         window.sessionStorage.setItem('token', 'test')
         //通过编程式路由导航跳转到后台主页,路由地址是 /home
-        await this.$router.push('/home')
+        await this.$router.push('/home/mainPage')
         this.loginLoading = false
       })
     }
