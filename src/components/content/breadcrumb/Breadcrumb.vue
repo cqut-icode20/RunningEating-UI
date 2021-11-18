@@ -20,7 +20,7 @@ export default {
 </script>
 
 <style>
-  .bread {
-      margin-top: 5px;
+  #bread {
+      margin: 10px 0 10px 10px;
   }
 </style>

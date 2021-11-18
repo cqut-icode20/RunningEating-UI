@@ -10,7 +10,7 @@ export const userAddFormRulesMixin = {
       callback(new Error('请输入合法的邮箱'))
     }
     // 验证手机的规则
-    var checkMobeli = (rule, value, callback) => {
+    let checkMobeli = (rule, value, callback) => {
       const regMobile = /^1[34578]\d{9}$/
       if (regMobile.test(value)) {
         return callback()

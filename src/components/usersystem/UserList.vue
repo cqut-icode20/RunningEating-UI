@@ -6,7 +6,7 @@
       <el-row :guuter = "20">
         <el-col :span = "7">
           <!-- 搜索与添加区域 -->
-          <el-input aria-placeholder="请输入内容" clearable v-model = "queryInfo.query" @clear = "getUserList">
+          <el-input aria-placeholder="请输入内容" clearable v-model = "queryInfo.query">
             <el-button slot = "append" icon = "el-icon-search" @click = "getUserList"></el-button>
           </el-input>
         </el-col>
